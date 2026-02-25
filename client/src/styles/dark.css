@@ -1,13 +1,44 @@
-body {
-  @apply dark:bg-neutral-700 dark:text-white;
+/* Dark mode base styles */
+.dark body {
+  background-color: #0a0a0a;
+  color: #fafafa;
 }
 
-div {
-  @apply dark:text-white;
+.dark div {
+  color: inherit;
 }
 
-input,
-textarea,
-select {
-  @apply dark:bg-[#11191f] dark:text-white;
+/* Form elements in dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #171717;
+  color: #fafafa;
+  border-color: #404040;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #737373;
+}
+
+/* Links in dark mode */
+.dark a {
+  color: inherit;
+}
+
+.dark a:hover {
+  color: #60a5fa;
+}
+
+/* Selection in dark mode */
+.dark ::selection {
+  background-color: rgba(96, 165, 250, 0.3);
 }

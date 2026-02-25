@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Navigate, Routes, Route, Outlet } from 'react-router-dom';
+import { Navigate, Routes, Route, Outlet, useLocation } from 'react-router-dom';
 
 import { DetailsPage } from 'src/pages/Details';
 import { HomePage } from 'src/pages/Home';
@@ -23,18 +23,57 @@ import { GoodreadsImportPage } from 'src/pages/import/Goodreads';
 import { ListPage } from 'src/pages/ListPage';
 import { EpisodePage } from 'src/pages/EpisodePage';
 import { ListsPage } from 'src/pages/ListsPage';
+import { ErrorState } from 'src/components/EmptyState';
+import { Trans } from '@lingui/macro';
+
+// Page transition wrapper
+const PageTransition: FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  
+  return (
+    <div
+      key={location.pathname}
+      className="animate-fade-in"
+    >
+      {children}
+    </div>
+  );
+};
 
 export const MyRouter: FunctionComponent = () => {
-  const { isLoading, user } = useUser();
+  const { isLoading, user, error } = useUser();
   const { configuration, isLoading: isLoadingConfiguration } =
     useConfiguration();
 
-  if (isLoading || isLoadingConfiguration) return <>{'Loading...'}</>;
+  if (isLoading || isLoadingConfiguration) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <div className="w-12 h-12 border-4 border-primary-200 dark:border-primary-900 rounded-full" />
+            <div className="absolute inset-0 w-12 h-12 border-4 border-primary-600 rounded-full border-t-transparent animate-spin" />
+          </div>
+          <span className="text-surface-600 dark:text-surface-400">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <ErrorState
+          title={<Trans>Failed to load</Trans>}
+          description={error}
+        />
+      </div>
+    );
+  }
 
   return (
     <>
       <Routes>
-        <Route element={<PageLayout />}>
+        <Route element={<PageLayout><Outlet /></PageLayout>}>
           {user ? (
             <>
               <Route
@@ -49,95 +88,95 @@ export const MyRouter: FunctionComponent = () => {
                 />
               )}
 
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
 
               <Route
                 path="/settings/*"
-                element={<SettingsPage key="settings" />}
+                element={<PageTransition><SettingsPage key="settings" /></PageTransition>}
               />
               <Route
                 path="/tv"
-                element={<ItemsPage key="/tv" mediaType="tv" />}
+                element={<PageTransition><ItemsPage key="/tv" mediaType="tv" /></PageTransition>}
               />
               <Route
                 path="/movies"
-                element={<ItemsPage key="/movies" mediaType="movie" />}
+                element={<PageTransition><ItemsPage key="/movies" mediaType="movie" /></PageTransition>}
               />
               <Route
                 path="/games"
-                element={<ItemsPage key="/games" mediaType="video_game" />}
+                element={<PageTransition><ItemsPage key="/games" mediaType="video_game" /></PageTransition>}
               />
               <Route
                 path="/books"
-                element={<ItemsPage key="/books" mediaType="book" />}
+                element={<PageTransition><ItemsPage key="/books" mediaType="book" /></PageTransition>}
               />
               <Route
                 path="/audiobooks"
-                element={<ItemsPage key="/audiobooks" mediaType="audiobook" />}
+                element={<PageTransition><ItemsPage key="/audiobooks" mediaType="audiobook" /></PageTransition>}
               />
 
               <Route
                 path="/upcoming"
-                element={<UpcomingPage key="/audiobooks" />}
+                element={<PageTransition><UpcomingPage key="/upcoming" /></PageTransition>}
               />
               <Route
                 path="/watchlist"
-                element={<WatchlistPage key="/watchlist" />}
+                element={<PageTransition><WatchlistPage key="/watchlist" /></PageTransition>}
               />
 
               <Route
                 path="/in-progress"
-                element={<InProgressPage key="/in-progress" />}
+                element={<PageTransition><InProgressPage key="/in-progress" /></PageTransition>}
               />
               <Route
                 path="/calendar"
-                element={<CalendarPage key="/calendar" />}
+                element={<PageTransition><CalendarPage key="/calendar" /></PageTransition>}
               />
               <Route
                 path="/details/:mediaItemId"
-                element={<DetailsPage key="/details" />}
+                element={<PageTransition><DetailsPage key="/details" /></PageTransition>}
               />
               <Route
                 path="/seasons/:mediaItemId/"
-                element={<SeasonsPage key="/seasons" />}
+                element={<PageTransition><SeasonsPage key="/seasons" /></PageTransition>}
               />
               <Route
                 path="/seasons/:mediaItemId/:seasonNumber"
-                element={<SeasonsPage key="/seasons" />}
+                element={<PageTransition><SeasonsPage key="/seasons" /></PageTransition>}
               />
               <Route
                 path="/episode/:mediaItemId/:seasonNumber/:episodeNumber"
-                element={<EpisodePage key="/episode" />}
+                element={<PageTransition><EpisodePage key="/episode" /></PageTransition>}
               />
               <Route
                 path="/seen-history/:mediaItemId"
-                element={<SeenHistoryPage key="/seen-history" />}
+                element={<PageTransition><SeenHistoryPage key="/seen-history" /></PageTransition>}
               />
 
-              <Route path="/lists" element={<ListsPage key="/lists" />} />
+              <Route path="/lists" element={<PageTransition><ListsPage key="/lists" /></PageTransition>} />
 
-              <Route path="/list/:listId" element={<ListPage key="/list" />} />
+              <Route path="/list/:listId" element={<PageTransition><ListPage key="/list" /></PageTransition>} />
 
-              <Route path="/import" element={<ImportPage key="/import" />} />
+              <Route path="/import" element={<PageTransition><ImportPage key="/import" /></PageTransition>} />
               <Route
                 path="/import/trakttv"
-                element={<TraktTvImportPage key="/import/trakttv" />}
+                element={<PageTransition><TraktTvImportPage key="/import/trakttv" /></PageTransition>}
               />
               <Route
                 path="/import/goodreads"
-                element={<GoodreadsImportPage key="/import/goodreads" />}
+                element={<PageTransition><GoodreadsImportPage key="/import/goodreads" /></PageTransition>}
               />
             </>
           ) : (
             <>
               {!configuration.noUsers && (
-                <Route path="/login" element={<LoginPage key="/login" />} />
+                <Route path="/login" element={<PageTransition><LoginPage key="/login" /></PageTransition>} />
               )}
 
               {configuration.enableRegistration && (
                 <Route
                   path="/register"
-                  element={<RegisterPage key="/register" />}
+                  element={<PageTransition><RegisterPage key="/register" /></PageTransition>}
                 />
               )}
             </>
@@ -148,7 +187,7 @@ export const MyRouter: FunctionComponent = () => {
           path="*"
           element={
             user ? (
-              <NotFound />
+              <PageLayout><NotFound /></PageLayout>
             ) : (
               <Navigate
                 to={configuration.noUsers ? '/register' : '/login'}
@@ -162,16 +201,17 @@ export const MyRouter: FunctionComponent = () => {
   );
 };
 
-const PageLayout: FunctionComponent = () => {
+const PageLayout: FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <NavComponent />
-
-      <div className="flex flex-col items-center max-w-5xl m-auto">
-        <div className="w-full p-2" key={location.pathname}>
-          <Outlet />
+      <main className="min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          {children}
         </div>
-      </div>
+      </main>
     </>
   );
 };
+
+export default MyRouter;

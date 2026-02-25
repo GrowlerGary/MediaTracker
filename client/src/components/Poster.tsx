@@ -6,145 +6,41 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useSpring } from '@react-spring/core';
-import { animated } from '@react-spring/web';
 
 import { MediaType } from 'mediatracker-api';
 
-const PosterCss: FunctionComponent<{
+const PosterComponent: FunctionComponent<{
   src?: string;
   href?: string;
   mediaType?: MediaType;
   itemMediaType?: MediaType;
+  children?: React.ReactNode;
+  className?: string;
 }> = (props) => {
-  const { src, href, mediaType, itemMediaType, children } = props;
+  const { src, href, mediaType, itemMediaType, children, className } = props;
 
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  const imgRef = useRef<HTMLImageElement>();
+  const [imageError, setImageError] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (!src) {
-      setTimeout(() => setImageLoaded(true), 50);
+      // Small delay to prevent flash
+      const timer = setTimeout(() => {
+        setImageLoaded(true);
+        setImageError(true);
+      }, 50);
+      return () => clearTimeout(timer);
+    } else {
+      setImageLoaded(false);
+      setImageError(false);
     }
   }, [src]);
 
-  const content = (
-    <>
-      {src && (
-        <img
-          ref={imgRef}
-          src={src}
-          draggable="false"
-          onChange={() => console.log('image changed')}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageLoaded(false)}
-          className={clsx(
-            'w-full h-full transition-all duration-300 rounded',
-            imageLoaded ? 'opacity-100' : 'opacity-0 blur-2xl'
-          )}
-        />
-      )}
-      <div
-        className={clsx(
-          'absolute top-0 left-0 flex items-center transition-all duration-300 w-full h-full text-gray-900 rounded overflow-clip bg-amber-800',
-          (src ? imageLoaded : !imageLoaded)
-            ? 'opacity-0 blur-2xl text-sm'
-            : 'opacity-100 text-9xl'
-        )}
-      >
-        <div className="w-full text-center select-none">?</div>
-      </div>
-    </>
-  );
-
-  return (
-    <>
-      <div
-        className={clsx(
-          'flex items-end w-full',
-          tailwindcssAspectRatioForMediaType(mediaType)
-        )}
-      >
-        <div
-          className={clsx(
-            'relative w-full h-full transition-shadow duration-100 rounded shadow-md overflow-clip shadow-black ',
-            href && 'hover:shadow-black hover:shadow-lg',
-            tailwindcssAspectRatioForMediaType(itemMediaType)
-          )}
-        >
-          {href ? (
-            <>
-              <a href={href} className="block w-full h-full hover:no-underline">
-                {content}
-              </a>
-            </>
-          ) : (
-            <>{content}</>
-          )}
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-            {children}
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const PosterSpring: FunctionComponent<{
-  src?: string;
-  href?: string;
-  mediaType?: MediaType;
-  itemMediaType?: MediaType;
-}> = (props) => {
-  const { src, href, mediaType, itemMediaType, children } = props;
-
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>();
-
-  const imageStyles = useSpring({
-    from: {
-      opacity: 0,
-      filter: 'blur(40px)',
-    },
-    to: {
-      opacity: 1,
-      filter: 'blur(0px)',
-    },
-    pause: !imageLoaded,
-  });
-
-  const placeholderStyles = useSpring({
-    ...(src
-      ? {
-          from: {
-            opacity: 1,
-            fontSize: '128px',
-            filter: 'blur(0px)',
-          },
-          to: {
-            opacity: 0,
-            fontSize: '10px',
-            filter: 'blur(40px)',
-          },
-          pause: !imageLoaded,
-        }
-      : {
-          from: {
-            opacity: 0,
-            fontSize: '10px',
-            filter: 'blur(40px)',
-          },
-          to: {
-            opacity: 1,
-            fontSize: '128px',
-            filter: 'blur(0px)',
-          },
-        }),
-  });
-
   useLayoutEffect(
     () => () => {
+      // Cleanup image on unmount to prevent memory leaks
       if (imgRef.current) {
         imgRef.current.src = '';
       }
@@ -152,59 +48,117 @@ const PosterSpring: FunctionComponent<{
     []
   );
 
+  const mediaTypeLabel = itemMediaType
+    ?.replace('_', ' ')
+    .replace(/\b\w/g, (l) => l.toUpperCase());
+
   const content = (
     <>
-      {src && (
-        <animated.div style={imageStyles} className="w-full h-full">
-          <img
-            ref={imgRef}
-            src={src}
-            draggable="false"
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageLoaded(false)}
-            className="w-full h-full rounded"
-          />
-        </animated.div>
+      {/* Actual image */}
+      {src && !imageError && (
+        <img
+          ref={imgRef}
+          src={src}
+          alt=""
+          draggable="false"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => {
+            setImageLoaded(true);
+            setImageError(true);
+          }}
+          className={clsx(
+            'absolute inset-0 w-full h-full object-cover transition-all duration-500',
+            imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+          )}
+        />
       )}
-      <animated.div
-        style={placeholderStyles}
-        className="absolute top-0 left-0 flex items-center w-full h-full text-gray-900 rounded overflow-clip text-9xl bg-amber-800"
+
+      {/* Loading shimmer */}
+      <div
+        className={clsx(
+          'absolute inset-0 bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 transition-opacity duration-300',
+          imageLoaded ? 'opacity-0' : 'opacity-100'
+        )}
       >
-        <div className="w-full text-center select-none">?</div>
-      </animated.div>
+        {!imageLoaded && (
+          <div className="absolute inset-0 skeleton-shimmer opacity-50" />
+        )}
+      </div>
+
+      {/* Placeholder for missing image */}
+      <div
+        className={clsx(
+          'absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-surface-200 to-surface-300 dark:from-surface-700 dark:to-surface-800 transition-opacity duration-300',
+          imageError || (!src && imageLoaded) ? 'opacity-100' : 'opacity-0'
+        )}
+      >
+        <span className="material-icons text-5xl text-surface-400 dark:text-surface-500 mb-2">
+          {itemMediaType === 'movie' && 'movie'}
+          {itemMediaType === 'tv' && 'tv'}
+          {itemMediaType === 'book' && 'menu_book'}
+          {itemMediaType === 'audiobook' && 'headphones'}
+          {itemMediaType === 'video_game' && 'sports_esports'}
+          {!itemMediaType && 'image_not_supported'}
+        </span>
+        {mediaTypeLabel && (
+          <span className="text-xs text-surface-500 dark:text-surface-400 font-medium">
+            {mediaTypeLabel}
+          </span>
+        )}
+      </div>
+
+      {/* Hover overlay */}
+      <div
+        className={clsx(
+          'absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-200',
+          isHovered ? 'opacity-100' : 'opacity-0'
+        )}
+      />
     </>
   );
 
   return (
-    <>
-      <div
-        className={clsx(
-          'flex items-end w-full',
-          tailwindcssAspectRatioForMediaType(mediaType)
-        )}
-      >
+    <div
+      className={clsx(
+        'relative w-full overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300',
+        tailwindcssAspectRatioForMediaType(mediaType),
+        className
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {href ? (
+        <a
+          href={href}
+          className="block w-full h-full hover:no-underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            className={clsx(
+              'relative w-full h-full transition-transform duration-500 ease-spring',
+              tailwindcssAspectRatioForMediaType(itemMediaType),
+              isHovered ? 'scale-105' : 'scale-100'
+            )}
+          >
+            {content}
+          </div>
+        </a>
+      ) : (
         <div
           className={clsx(
-            'relative w-full transition-shadow duration-100 rounded shadow-md overflow-clip shadow-black',
-            href && 'hover:shadow-black hover:shadow-lg',
+            'relative w-full h-full',
             tailwindcssAspectRatioForMediaType(itemMediaType)
           )}
         >
-          {href ? (
-            <>
-              <a href={href} className="block w-full h-full hover:no-underline">
-                {content}
-              </a>
-            </>
-          ) : (
-            <>{content}</>
-          )}
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-            {children}
-          </div>
+          {content}
         </div>
+      )}
+
+      {/* Overlay children (badges, buttons, etc.) */}
+      <div className="absolute inset-0 pointer-events-none">
+        {children}
       </div>
-    </>
+    </div>
   );
 };
 
@@ -220,16 +174,5 @@ const tailwindcssAspectRatioForMediaType = (mediaType?: MediaType) => {
   return 'aspect-[2/3]';
 };
 
-const aspectRatioForMediaType = (mediaType?: MediaType) => {
-  if (mediaType === 'audiobook') {
-    return 1 / 1;
-  }
-
-  if (mediaType === 'video_game') {
-    return 3 / 4;
-  }
-
-  return 2 / 3;
-};
-
-export { PosterSpring as Poster };
+export { PosterComponent as Poster };
+export default PosterComponent;
