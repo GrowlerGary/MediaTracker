@@ -1,6 +1,6 @@
 # Docker Setup for MediaTracker UI
 
-This fork includes enhanced UI/UX improvements while maintaining full Docker compatibility.
+> **This is a fork of [bonukai/MediaTracker](https://github.com/bonukai/MediaTracker)** with enhanced UI/UX improvements. The Docker configuration is compatible with the original, with additional images published to `ghcr.io/growlergary/mediatracker`.
 
 ## Quick Start
 
@@ -127,17 +127,45 @@ networks:
     external: true
 ```
 
+### Using Original Image
+
+If you prefer the original MediaTracker without UI modifications:
+
+```yaml
+version: '3.8'
+services:
+  mediatracker:
+    image: bonukai/mediatracker:latest
+    container_name: mediatracker
+    ports:
+      - "7481:7481"
+    volumes:
+      - ./storage:/storage
+      - ./assets:/assets
+    environment:
+      - TMDB_LANG=en
+      - TZ=America/New_York
+    restart: unless-stopped
+```
+
+## Available Images
+
+| Image | Description |
+|-------|-------------|
+| `ghcr.io/growlergary/mediatracker:latest` | This fork with UI enhancements |
+| `ghcr.io/growlergary/mediatracker:main` | Latest commit from main branch |
+| `bonukai/mediatracker:latest` | Original project (stable) |
+| `bonukai/mediatracker:unstable` | Original project (pre-releases) |
+
 ## Updating
 
 ```bash
-# Pull latest image
+# Pull latest image from this fork
 docker-compose pull
-
-# Recreate container
 docker-compose up -d
 
-# Or with prebuilt image
-docker pull ghcr.io/growlergary/mediatracker:latest
+# Or update to original
+docker pull bonukai/mediatracker:latest
 docker-compose up -d
 ```
 
@@ -176,3 +204,14 @@ This Docker image includes the following UI/UX enhancements:
 - 🔍 Improved search and pagination UI
 
 All improvements are purely client-side and do not affect the API or database structure.
+
+## Attribution
+
+- **Original Project:** [bonukai/MediaTracker](https://github.com/bonukai/MediaTracker)
+- **Original Docker Image:** `bonukai/mediatracker`
+- **Fork Author:** [@GrowlerGary](https://github.com/GrowlerGary)
+- **License:** MIT (same as original)
+
+---
+
+For the original project's Docker documentation, see: https://github.com/bonukai/MediaTracker

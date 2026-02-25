@@ -1,6 +1,29 @@
 {
-  "name": "mediatracker",
+  "name": "mediatracker-ui-enhanced",
+  "description": "MediaTracker with enhanced UI/UX - A fork of bonukai/MediaTracker with modern design improvements",
+  "version": "1.0.0",
   "private": true,
+  "author": "GrowlerGary (fork) | Original: bonukai",
+  "homepage": "https://github.com/GrowlerGary/MediaTracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GrowlerGary/MediaTracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GrowlerGary/MediaTracker/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "mediatracker",
+    "media-tracker",
+    "movies",
+    "tv-shows",
+    "books",
+    "games",
+    "self-hosted",
+    "fork",
+    "ui-enhanced"
+  ],
   "scripts": {
     "postinstall": "cd server && npm install && cd ../client && npm install",
     "build": "npm run build --prefix server && npm run build --prefix client",
