@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mediatracker:
+    container_name: mediatracker-ui
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7481:7481"
+    volumes:
+      - mediatracker-storage:/storage
+      - mediatracker-assets:/assets
+      - mediatracker-logs:/logs
+    environment:
+      # Server configuration
+      - PORT=7481
+      - HOSTNAME=0.0.0.0
+      
+      # Language settings
+      - SERVER_LANG=en
+      - TMDB_LANG=en
+      - AUDIBLE_LANG=us
+      
+      # Timezone
+      - TZ=America/New_York
+      
+      # Database (SQLite default)
+      - DATABASE_CLIENT=better-sqlite3
+      - DATABASE_PATH=/storage/data.db
+      
+      # Paths
+      - ASSETS_PATH=/assets
+      - LOGS_PATH=/logs
+      
+      # User/Group IDs (optional - for file permissions)
+      - PUID=1000
+      - PGID=1000
+      
+      # Node environment
+      - NODE_ENV=production
+      
+      # Optional: IGDB API credentials for game lookup
+      # - IGDB_CLIENT_ID=your_client_id
+      # - IGDB_CLIENT_SECRET=your_client_secret
+      
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7481/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mediatracker-storage:
+    driver: local
+  mediatracker-assets:
+    driver: local
+  mediatracker-logs:
+    driver: local

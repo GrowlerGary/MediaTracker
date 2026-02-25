@@ -32,7 +32,6 @@ export const NavComponent: FunctionComponent = () => {
   const location = useLocation();
   const routes = useRouteNames();
 
-  // Handle scroll effect for navbar
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -41,12 +40,10 @@ export const NavComponent: FunctionComponent = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close sidebar on route change
   useEffect(() => {
     setShowSidebar(false);
   }, [location.pathname]);
 
-  // Prevent body scroll when sidebar is open
   useEffect(() => {
     if (showSidebar) {
       document.body.style.overflow = 'hidden';
@@ -73,7 +70,6 @@ export const NavComponent: FunctionComponent = () => {
             )}
           >
             <div className="flex items-center justify-between h-14 px-4">
-              {/* Logo / Brand */}
               <a
                 href="#/"
                 className="flex items-center gap-2 text-xl font-bold text-surface-900 dark:text-white hover:no-underline"
@@ -84,7 +80,6 @@ export const NavComponent: FunctionComponent = () => {
                 <span className="hidden sm:inline">MediaTracker</span>
               </a>
 
-              {/* Desktop Navigation */}
               <div className="hidden lg:flex items-center gap-1">
                 {routes.slice(0, 7).map((route) => (
                   <NavLink
@@ -132,9 +127,7 @@ export const NavComponent: FunctionComponent = () => {
                 </div>
               </div>
 
-              {/* Right side actions */}
               <div className="flex items-center gap-2">
-                {/* Theme toggle */}
                 <button
                   onClick={() => setDarkMode(!darkMode)}
                   className="p-2 rounded-lg text-surface-600 hover:bg-surface-100 hover:text-surface-900 dark:text-surface-400 dark:hover:bg-surface-800 dark:hover:text-surface-100 transition-colors"
@@ -145,7 +138,6 @@ export const NavComponent: FunctionComponent = () => {
                   </span>
                 </button>
 
-                {/* User menu (desktop) */}
                 <div className="hidden md:flex items-center gap-3 pl-3 border-l border-surface-200 dark:border-surface-700">
                   <a
                     href="#/settings"
@@ -163,7 +155,6 @@ export const NavComponent: FunctionComponent = () => {
                   </button>
                 </div>
 
-                {/* Mobile menu button */}
                 <button
                   className="lg:hidden p-2 rounded-lg text-surface-600 hover:bg-surface-100 dark:text-surface-400 dark:hover:bg-surface-800 transition-colors"
                   onClick={() => setShowSidebar(!showSidebar)}
@@ -177,7 +168,6 @@ export const NavComponent: FunctionComponent = () => {
             </div>
           </nav>
 
-          {/* Mobile Sidebar */}
           <SideBar
             showSidebar={showSidebar}
             hideSidebar={() => setShowSidebar(false)}
@@ -226,21 +216,18 @@ const SideBar: FunctionComponent<{
       {(styles, show) =>
         show && (
           <>
-            {/* Backdrop */}
             <animated.div
               style={{ opacity: styles.opacity }}
               className="fixed inset-0 bg-surface-900/50 backdrop-blur-sm z-40 lg:hidden"
               onClick={hideSidebar}
             />
 
-            {/* Sidebar */}
             <animated.div
               style={{
                 transform: styles.opacity.to((o) => `translateX(${(1 - o) * 100}%)`),
               }}
               className="fixed top-0 right-0 bottom-0 w-72 z-50 glass-strong shadow-2xl lg:hidden flex flex-col"
             >
-              {/* Sidebar Header */}
               <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700">
                 <div className="flex items-center gap-2">
                   <span className="material-icons text-primary-600 dark:text-primary-400">
@@ -256,7 +243,6 @@ const SideBar: FunctionComponent<{
                 </button>
               </div>
 
-              {/* Navigation Links */}
               <div className="flex-1 overflow-y-auto py-4">
                 <div className="px-3 space-y-1">
                   {routes.map((route) => {
@@ -293,7 +279,6 @@ const SideBar: FunctionComponent<{
                 </div>
               </div>
 
-              {/* Sidebar Footer */}
               <div className="p-4 border-t border-surface-200 dark:border-surface-700 space-y-2">
                 <button
                   onClick={() => setDarkMode(!darkMode)}
