@@ -90,7 +90,6 @@ export const Pagination: FunctionComponent<{
 }> = (props) => {
   const { numberOfPages, page, setPage } = props;
 
-  // Generate page numbers to show
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
     const showEllipsis = numberOfPages > 7;
@@ -121,7 +120,6 @@ export const Pagination: FunctionComponent<{
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 my-6">
-      {/* Previous button */}
       <button
         onClick={() => setPage(page - 1)}
         disabled={page === 1}
@@ -131,7 +129,6 @@ export const Pagination: FunctionComponent<{
         <span className="material-icons">chevron_left</span>
       </button>
 
-      {/* Page numbers */}
       <div className="flex items-center gap-1">
         {getPageNumbers().map((pageNum, index) =>
           pageNum === '...' ? (
@@ -158,7 +155,6 @@ export const Pagination: FunctionComponent<{
         )}
       </div>
 
-      {/* Next button */}
       <button
         onClick={() => setPage(page + 1)}
         disabled={page === numberOfPages}
@@ -270,7 +266,6 @@ export const PaginatedGridItems: FunctionComponent<{
   const error = itemsError || searchError;
   const hasNoItems = !isLoading && !searchQuery && items.length === 0 && Object.keys(filter).length === 0;
 
-  // Handle error state
   if (error && !isLoading) {
     return (
       <ErrorState
@@ -285,7 +280,6 @@ export const PaginatedGridItems: FunctionComponent<{
       <div className="flex justify-center w-full" ref={mainContainerRef}>
         <div className="flex flex-row flex-wrap items-grid w-full">
           <div className="mb-1 header">
-            {/* Search */}
             {showSearch && args.mediaType && (
               <Search
                 onSearch={setSearchQuery}
@@ -293,7 +287,6 @@ export const PaginatedGridItems: FunctionComponent<{
               />
             )}
 
-            {/* Empty state for new users */}
             {showSearch && hasNoItems && (
               <EmptyItems
                 mediaType={mediaType}
@@ -302,37 +295,31 @@ export const PaginatedGridItems: FunctionComponent<{
               />
             )}
 
-            {/* Results header */}
             {!isLoading && !hasNoItems && (
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2">
                   {searchQuery ? (
                     <div className="flex items-center gap-2 text-surface-600 dark:text-surface-400">
                       <span className="material-icons text-surface-400">search</span>
-                      <Plural
-                        value={searchResult?.length || 0}
-                        one={
-                          <Trans>
-                            Found <strong className="text-surface-900 dark:text-surface-100">#</strong> result for "
-                            <strong className="text-surface-900 dark:text-surface-100">{searchQuery}</strong>"
-                          </Trans>
-                        }
-                        other={
-                          <Trans>
-                            Found <strong className="text-surface-900 dark:text-surface-100">#</strong> results for "
-                            <strong className="text-surface-900 dark:text-surface-100">{searchQuery}</strong>"
-                          </Trans>
-                        }
-                      />
+                      <span>
+                        <Plural
+                          value={searchResult?.length || 0}
+                          one="Found 1 result"
+                          other={`Found ${searchResult?.length || 0} results`}
+                        />
+                        {` for "${searchQuery}"`}
+                      </span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 text-surface-600 dark:text-surface-400">
                       <span className="material-icons text-surface-400">folder_open</span>
-                      <Plural
-                        value={numberOfItemsTotal}
-                        one=<strong className="text-surface-900 dark:text-surface-100">1 item</strong>
-                        other=<strong className="text-surface-900 dark:text-surface-100"># items</strong>
-                      />
+                      <span>
+                        <Plural
+                          value={numberOfItemsTotal}
+                          one="1 item"
+                          other={`${numberOfItemsTotal} items`}
+                        />
+                      </span>
                     </div>
                   )}
                 </div>
@@ -347,14 +334,12 @@ export const PaginatedGridItems: FunctionComponent<{
             )}
           </div>
 
-          {/* Loading state */}
           {isLoading ? (
             <div className="w-full flex flex-wrap justify-center gap-5 py-8">
               <GridItemsSkeleton count={10} />
             </div>
           ) : (
             <>
-              {/* Empty search results */}
               {searchQuery && (searchResult?.length === 0 || !searchResult) ? (
                 <div className="w-full">
                   <EmptySearchResults
@@ -364,7 +349,6 @@ export const PaginatedGridItems: FunctionComponent<{
                 </div>
               ) : (
                 <>
-                  {/* Grid items */}
                   {(searchQuery ? searchResult : items)?.map((mediaItem, index) => (
                     <div
                       key={mediaItem.id}
@@ -383,7 +367,6 @@ export const PaginatedGridItems: FunctionComponent<{
                     </div>
                   ))}
 
-                  {/* Pagination */}
                   <div className="footer w-full">
                     {!searchQuery && items && !isLoadingItems && numberOfPages > 1 && (
                       <Pagination
