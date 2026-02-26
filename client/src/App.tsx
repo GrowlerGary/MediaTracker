@@ -130,9 +130,10 @@ export const App: FunctionComponent = () => {
     };
   }, []);
 
-  if (!loaded) {
-    return <LoadingScreen />;
-  }
+  // NOTE: Font loading check disabled - was causing blank page
+  // if (!loaded) {
+  //   return <LoadingScreen />;
+  // }
 
   return (
     <I18nProvider i18n={i18n}>
