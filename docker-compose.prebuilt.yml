@@ -1,3 +1,14 @@
+# Docker Compose - Pre-built Image
+# ⚠️ NOTE: This requires the image to be published to ghcr.io first
+# The GitHub Actions workflow needs to run and publish the image
+# 
+# Until then, use docker-compose.yml which builds from source
+#
+# After the image is published, make sure the package visibility is set to public:
+# 1. Go to: https://github.com/users/GrowlerGary/packages/container/mediatracker/settings
+# 2. Under "Danger Zone" click "Change visibility"
+# 3. Select "Public" and confirm
+
 version: '3.8'
 
 services:
