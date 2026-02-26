@@ -430,10 +430,10 @@ export const DetailsPage: FunctionComponent = () => {
                 <div className="flex items-center gap-3">
                   <span className="material-icons text-primary-600 dark:text-primary-400">play_circle</span>
                   <span className="font-medium">
-                    {isMovie(mediaItem) && <Trans>I'm watching this</Trans>}
-                    {isBook(mediaItem) && <Trans>I'm reading this</Trans>}
-                    {isAudiobook(mediaItem) && <Trans>I'm listening to this</Trans>}
-                    {isVideoGame(mediaItem) && <Trans>I'm playing this</Trans>}
+                    {isMovie(mediaItem) && <Trans>I&apos;m watching this</Trans>}
+                    {isBook(mediaItem) && <Trans>I&apos;m reading this</Trans>}
+                    {isAudiobook(mediaItem) && <Trans>I&apos;m listening to this</Trans>}
+                    {isVideoGame(mediaItem) && <Trans>I&apos;m playing this</Trans>}
                   </span>
                 </div>
                 <span className="material-icons text-surface-400">chevron_right</span>

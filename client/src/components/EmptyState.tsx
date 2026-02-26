@@ -128,9 +128,9 @@ export const EmptySearchResults: FunctionComponent<{ query?: string; onClear?: (
     title={<Trans>No results found</Trans>}
     description={
       query ? (
-        <Trans>We couldn't find any matches for "{query}". Try checking for typos or using different keywords.</Trans>
+        <Trans>We couldn&apos;t find any matches for &quot;{query}&quot;. Try checking for typos or using different keywords.</Trans>
       ) : (
-        <Trans>Try adjusting your search or filters to find what you're looking for.</Trans>
+        <Trans>Try adjusting your search or filters to find what you&apos;re looking for.</Trans>
       )
     }
     action={
