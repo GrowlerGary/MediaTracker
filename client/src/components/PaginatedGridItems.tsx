@@ -186,7 +186,9 @@ export const PaginatedGridItems: FunctionComponent<{
     orderBy: args.orderBy,
     mediaType: args.mediaType,
   });
-  const { filter, FilterByComponent } = useFilterBy(args.mediaType);
+  
+  // Only use filter when mediaType is defined
+  const { filter, FilterByComponent } = useFilterBy(args.mediaType || 'movie');
 
   useEffect(() => {
     if (page !== 1) {
