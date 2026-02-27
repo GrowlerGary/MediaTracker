@@ -264,7 +264,8 @@ export const PaginatedGridItems: FunctionComponent<{
 
   const isLoading = isLoadingSearchResult || isLoadingItems;
   const error = itemsError || searchError;
-  const hasNoItems = !isLoading && !searchQuery && (!items || items.length === 0) && Object.keys(filter).length === 0;
+  // Check if there are no items - filter always has at least one key ('all')
+  const hasNoItems = !isLoading && !searchQuery && (!items || items.length === 0);
 
   if (error && !isLoading) {
     return (
@@ -287,10 +288,10 @@ export const PaginatedGridItems: FunctionComponent<{
               />
             )}
 
-            {showSearch && hasNoItems && (
+            {hasNoItems && (
               <EmptyItems
                 mediaType={mediaType}
-                onSearch={() => document.querySelector('input[type="text"]')?.focus()}
+                onSearch={showSearch ? () => document.querySelector('input[type="text"]')?.focus() : undefined}
                 onImport={() => window.location.href = '#/import'}
               />
             )}
