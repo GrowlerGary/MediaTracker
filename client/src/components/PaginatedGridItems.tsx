@@ -264,7 +264,7 @@ export const PaginatedGridItems: FunctionComponent<{
 
   const isLoading = isLoadingSearchResult || isLoadingItems;
   const error = itemsError || searchError;
-  const hasNoItems = !isLoading && !searchQuery && items.length === 0 && Object.keys(filter).length === 0;
+  const hasNoItems = !isLoading && !searchQuery && (!items || items.length === 0) && Object.keys(filter).length === 0;
 
   if (error && !isLoading) {
     return (
