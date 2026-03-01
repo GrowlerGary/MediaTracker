@@ -9,7 +9,7 @@ import React, {
 
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Plural, Trans } from '@lingui/macro';
+import { t, Plural, Trans } from '@lingui/macro';
 
 import { useSearch } from 'src/api/search';
 import { Items } from 'mediatracker-api';
