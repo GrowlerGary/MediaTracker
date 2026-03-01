@@ -21,17 +21,7 @@ setupI18n();
 
 export const queryClient = new QueryClient({
   defaultOptions: {
-    mutations: {
-      mutationFn: (a) => {
-        console.log(a);
-        return null;
-      },
-    },
     queries: {
-      queryFn: (x) => {
-        console.log(x);
-        return null;
-      },
       keepPreviousData: true,
       onSuccess: (data) => {
         if (

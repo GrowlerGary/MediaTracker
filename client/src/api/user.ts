@@ -33,7 +33,6 @@ export const useUser = () => {
       queryClient.removeQueries('notificationPlatformsCredentials');
       queryClient.removeQueries('tokens');
       queryClient.removeQueries(['calendar']);
-      queryClient.removeQueries(['calendar']);
       queryClient.removeQueries(['details']);
       queryClient.removeQueries(['import']);
       queryClient.removeQueries(['items']);

@@ -1,10 +1,10 @@
-import { useQuery, useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { Items } from 'mediatracker-api';
 import { mediaTrackerApi } from 'src/api/api';
 
 export const useItems = (args: Items.Paginated.RequestQuery) => {
-  const { error, data, isFetched } = useQuery(
+  const { error, data, isFetched, refetch } = useQuery(
     ['items', args],
     async () => mediaTrackerApi.items.paginated(args),
     {
@@ -12,16 +12,12 @@ export const useItems = (args: Items.Paginated.RequestQuery) => {
     }
   );
 
-  const search = useMutation((query: string) =>
-    mediaTrackerApi.search.search({ mediaType: args.mediaType, q: query })
-  );
-
   return {
-    items: search.data ? search.data : data?.data,
+    items: data?.data,
     error: error,
-    isLoading: !isFetched || search.isLoading,
+    isLoading: !isFetched,
     numberOfPages: data ? data.totalPages : undefined,
     numberOfItemsTotal: data ? data.total : undefined,
-    search: search.mutate,
+    refetch: refetch,
   };
 };

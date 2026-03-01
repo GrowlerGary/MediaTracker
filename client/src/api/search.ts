@@ -13,7 +13,7 @@ export const useItemsKey = (
 
 export const useSearch = () => {
   const [query, setQuery] =
-    useState<{ mediaType: MediaType; query: string }>(null);
+    useState<{ mediaType: MediaType; query: string } | null>(null);
 
   const { isLoading, error, data } = useQuery(
     ['search', query],
